@@ -1,0 +1,198 @@
+<div class="container-fluid">
+   <div class="row">
+      <div class="header">
+         <div class="logo col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <%= link_to image_tag("logo.png", :alt => "Image Description", :class => "img-responsive"), chapters_path %>
+         </div>
+         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="navbar navbar-default text-center" role="navigation">
+               <button class="navbar-toggle" data-target=".navbar-responsive-collapse" data-toggle="collapse" type="button">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               </button>
+               <div class="navbar-collapse navbar-responsive-collapse collapse">
+                  <ul class="nav navbar-nav">
+                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                           <li>
+                              <%= link_to chapters_path do %>
+                              <span class="glyphicon glyphicon-home"></span>
+                              <%= "Home" %>
+                              <% end %>
+                           </li>
+                           <li class="divider"></li>
+                           <% @chapters.each do |chapter| %>
+                           <li>
+                              <%= link_to(chapter.title, chapter)%>
+                           </li>
+                           <% end %>
+                        </ul>
+                     </li>
+                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <i class="glyphicon glyphicon-user"></i> <%= current_user.nickname %>
+                        </a>
+                        <div class="dropdown-menu form-login stop-propagation" role="menu">
+                           <%= link_to(destroy_user_session_path, :method => :delete, :class => "btn btn-danger btn-block") do %>  
+                           <i class="glyphicon glyphicon-ok"></i>
+                           Logout
+                           <% end %>
+                        </div>
+                     </li>
+                     <li><a href="mailto:simon_somlai@hotmail.com"><span class="glyphicon glyphicon-envelope"></span>Contact</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row bob">
+      <div class="description text cf">
+         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <%= image_tag(@chapter.icon.url , :alt => "Image Description", :class => "img-responsive pull-right hidden-xs")%>
+            <h1><%= @chapter.title %></h1>
+            <p><%= raw(@chapter.description) %></p>
+         </div>
+      </div>
+      <div class="description test cf">
+         <div class="text-center button col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <% if LessonProgression.where(user_id: current_user, completion: false, chapter_id: @chapter.id).any? %>
+            <% @chapterid = @chapter.id %>
+            <% @chapterfind = Chapter.friendly.find(@chapterid)  %>
+            <% @lessonid = LessonProgression.where(user_id: current_user, completion: false, chapter_id: @chapter.id).first.lesson_id %>
+            <% @nextlesson = Lesson.friendly.find(@lessonid)  %>
+            <%= link_to("Next Lesson >>", chapter_lesson_path(@chapterfind, @nextlesson) , class: "btn btn-lg btn-success") %>
+            <% elsif @chapter.id != Chapter.last.id %>
+            <%= link_to("Next Chapter! >>", chapter_path(@chapter.id + 1), class: "btn btn-lg btn-warning") %>
+            <% end %>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="description cf">
+         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h4 class="title"> Overview </h4>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="content cf">
+         <div id="articles" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <% @chapter.lessons.each do |lesson| %>
+            <%= link_to(chapter_lesson_path(@chapter, lesson)) do %>
+            <article class="cf">
+               <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                  <%= image_tag(lesson.coverimage.url, :class => "pull-left img-responsive") %>
+               </div>
+               <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                  <h2><%= lesson.title %> 
+                     <% if LessonProgression.where(user_id: current_user.id, completion: false, chapter_id: @chapter.id).any? %>
+                     <% LessonProgression.find_or_create_by(lesson_id: lesson.id, user_id: current_user.id, chapter_id: @chapter.id) %> 
+                     <% if LessonProgression.where(user_id: current_user.id, completion: false, chapter_id: @chapter.id).first.lesson_id == lesson.id %>
+                     <span class="current"><i class="glyphicon glyphicon-play"></i> Current Lesson</span>
+                     <% elsif LessonProgression.where(lesson_id: lesson.id, user_id: current_user.id, chapter_id: @chapter.id).first.completion == false && LessonProgression.where(user_id: current_user.id, completion: false).first.lesson_id != lesson.id  %>
+                     <span class="incomplete">Incomplete</span>
+                     <% else %>
+                     <span><i class="glyphicon glyphicon-ok"></i> Completed</span>
+                     <% end %>
+                     <% else %>
+                     <span><i class="glyphicon glyphicon-ok"></i> Completed</span>
+                     <% end %>
+                  </h2>
+                  <p>
+                     <%= raw sanitize(lesson.description)[0..180] %>..
+                  </p>
+               </div>
+               <% if current_user.admin == true %>
+               <%= link_to 'Show', chapter_lesson_path(@chapter,lesson) %>
+               <%= link_to 'Edit', edit_chapter_lesson_path(@chapter,lesson) %>
+               <%= link_to 'Destroy', chapter_lesson_path(@chapter,lesson), method: :delete, data: { confirm: 'Are you sure?' } %>
+               <% end %>
+            </article>
+            <% end %>
+            <hr/>
+            <% end %>
+            <% if current_user.admin == true %>
+            <article class="cf">
+               <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 text-center">
+                  <h2><a class="newitem" href="#"><i style="vertical-align: middle; padding-right: 65px;" class="fa fa-plus fa-3x" aria-hidden="true"></i>New Lesson</a></h2>
+               </div>
+            </article>
+            <% end %>
+         </div>
+         <div class="bio spacing text-center col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div id="bio">
+               <img class="img-responsive bio center-block" src="<%= asset_path("profiler.JPG")%>" alt="">
+               <h3><a href="mailto:simon_somlai@hotmail.com">Simon Somlai</a></h3>
+               <h4>Food Master Ninja</h4>
+               <p>Personal trainer, writer & web-developer</p>
+            </div>
+         </div>
+         <div class="progression spacing text-center col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div id="progress">
+               <h3>Chapter Progress</h3>
+               <div class="c100 p<%= @chapterprogress %>">
+                  <span><%= @chapterprogress %>%</span>
+                  <div class="slice">
+                     <div class="bar"></div>
+                     <div class="fill"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<% if current_user.admin == true %>
+<div class="popup hidden-elem">
+   <div "popup-wrapper">
+      <%= form_for [@chapter, @chapter.lessons.build] do |f| %>
+      <a class="closepopup" href="#"><i class="fa fa-times fa-3x" aria-hidden="true"></i></a>
+      <h2>New Lesson</h2>
+      <div class="form-group">
+         <%= f.label :title %><br>
+         <%= f.text_field :title, :class => "form-control" %>
+      </div>
+      <div class="form-group">
+         <%= f.label :coverimage, "Cover Image" %><br>
+         <%= f.file_field :coverimage, :class => "form-control" %>
+      </div>
+      <div class="form-group">
+         <%= f.label :video, "Lesson video" %><br>
+         <%= f.file_field :video, :class => "form-control" %>
+      </div>
+      <div id="wysiwig" class="form-group">
+         <%= f.label :description %><br>
+         <%= f.text_area :description, :class => "wysiwig" %>
+      </div>
+      <p>Format: item1, item2, item3</p>
+      <div class="form-group">
+         <%= f.label :sources %><br>
+         <%= f.text_area :sources, :class => "form-control" %>
+      </div>
+      <div class="form-group">
+         <%= f.label :actions %><br>
+         <%= f.text_area :actions, :class => "form-control" %>
+      </div>
+      <p>Format: title => link, title2 => link2</p>
+      <div class="form-group">
+         <%= f.label :files %><br>
+         <%= f.text_area :files, :class => "form-control" %>
+      </div>
+      <div class="form-group">
+         <%= f.label :images %><br>
+         <%= f.text_area :images, :class => "form-control" %>
+      </div>
+      <div class="form-group">
+         <%= f.label :videos %><br>
+         <%= f.text_area :videos, :class => "form-control" %>
+      </div>
+      <div class="actions">
+         <%= f.submit class: "btn btn-danger" %>
+      </div>
+      <% end %>
+   </div>
+</div>
+<% end %>

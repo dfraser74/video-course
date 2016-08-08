@@ -1,0 +1,175 @@
+<div class="lesson container-fluid">
+   <div class="row">
+      <div class="header">
+         <div class="logo col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <%= link_to image_tag("logo.png", :alt => "Image Description", :class => "img-responsive"), chapters_path %>
+         </div>
+         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="navbar navbar-default text-center" role="navigation">
+               <button class="navbar-toggle" data-target=".navbar-responsive-collapse" data-toggle="collapse" type="button">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               </button>
+               <div class="navbar-collapse navbar-responsive-collapse collapse">
+                  <ul class="nav navbar-nav">
+                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                           <li>
+                              <%= link_to chapters_path do %>
+                              <span class="glyphicon glyphicon-home"></span>
+                              <%= "Home" %>
+                              <% end %>
+                           </li>
+                           <li class="divider"></li>
+                           <% @chapters.each do |chapter| %>
+                           <li>
+                              <%= link_to(chapter.title, chapter)%>
+                           </li>
+                           <% end %>
+                        </ul>
+                     </li>
+                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <i class="glyphicon glyphicon-user"></i> <%= current_user.nickname %>
+                        </a>
+                        <div class="dropdown-menu form-login stop-propagation" role="menu">
+                           <%= link_to(destroy_user_session_path, :method => :delete, :class => "btn btn-danger btn-block") do %>  
+                           <i class="glyphicon glyphicon-ok"></i>
+                           Logout
+                           <% end %>
+                        </div>
+                     </li>
+                     <li><a href="mailto:simon_somlai@hotmail.com"><span class="glyphicon glyphicon-envelope"></span>Contact</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="description cf">
+         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h2 class="title"><%= @lesson.title %></h2>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="lessonwrapper cf">
+         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12" id="video">
+            <div class="embed-responsive embed-responsive-16by9">
+               <%= video_tag(@lesson.video.url, controls: true, :id => "videolesson", :data_smartass => "Nooo stahp, what are you doing! No downloading :(") %>
+            </div>
+         </div>
+         <div class="spacing col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div id="action">
+               <h3 class="text-center">Action Points</h3>
+               <ul>
+                  <% if @lesson.actions.length != 0 %>
+                  <li>
+                     <% @lesson.actions.split(",").each do |action| %>
+                  <li>
+                     <%= action %>
+                  </li>
+                  <% end %>
+                  <% else %>
+                  <li>No Actions</li>
+                  <% end %>
+               </ul>
+            </div>
+         </div>
+         <div class="progression spacing text-center col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div id="progress">
+               <h3>Mark As Completed</h3>
+               <% if @curprogression.completion == false %>
+               <%= link_to(completed_path(chapter_id: @chapter, lesson: @lesson.id, status: true) , :method => :patch, :class => "status_link" ) do %>
+               <div class="toggle-button toggle-button--vesi">
+                  <input id="toggleButton5" type="checkbox">
+                  <label for="toggleButton5" data-on-text="Completed!" data-off-text="Incomplete"></label>
+                  <div class="toggle-button__icon"></div>
+               </div>
+               <% end %>
+               <% else %>
+               <%= link_to(completed_path(chapter_id: @chapter, lesson: @lesson, status: false) , :method => :patch, :class => "status_link" ) do %>
+               <div class="toggle-button toggle-button--vesi">
+                  <input id="toggleButton5" type="checkbox" checked="checked">
+                  <label for="toggleButton5" data-on-text="Completed!" data-off-text="Incomplete"></label>
+                  <div class="toggle-button__icon"></div>
+               </div>
+               <% end %>
+               <% end %>
+            </div>
+         </div>
+         <div id="lessondescription" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <h3>Description</h3>
+            <p>
+               <%= raw(@lesson.description) %>
+            </p>
+            <hr/>
+            <ol class="sourceslist">
+               <% @lesson.sources.split(",").each do |sources| %>
+               <li><%= sources %></li>
+               <% end %>
+            </ol>
+         </div>
+         <div class="spacing col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div id="lessonassets">
+               <h3 class="text-center">Attachments</h3>
+               <ul class="files">
+                  <% if @lesson.files.length != 0 %>
+                  <% @lesson.files.gsub(/[{}]/,'').split(', ').map{|h| h1,h2 = h.split('=>'); {h1 => h2}}.reduce(:merge).each do |key, value|  %>
+                  <li><a target="_blank" href="<%= value %>"><%= key %></a></li>
+                  <% end %>
+                  <% else %>
+                  <li> No Files
+                     <% end %>
+               </ul>
+               <ul class="images">
+                  <% if @lesson.images.length != 0 %>
+                  <% @lesson.images.gsub(/[{}]/,'').split(', ').map{|h| h1,h2 = h.split('=>'); {h1 => h2}}.reduce(:merge).each do |key, value|  %>
+                  <li><a target="_blank" href="<%= value %>"><%= key %></a></li>
+                  <% end %>
+                  <% else %>
+                  <li> No images
+                     <% end %>
+               </ul>
+               <ul class="videos">
+                  <% if @lesson.videos.length != 0 %>
+                  <% @lesson.videos.gsub(/[{}]/,'').split(', ').map{|h| h1,h2 = h.split('=>'); {h1 => h2}}.reduce(:merge).each do |key, value|  %>
+                  <li><a target="_blank" href="<%= value %>"><%= key %></a></li>
+                  <% end %>
+                  <% else %>
+                  <li> No videos
+                     <% end %>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+    <div class="row">
+      <div class="description cf">
+         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h2 class="comments">Comments</h2>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="lessonwrapper cf">
+         <div class="lessoncomments col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div id="disqus_thread"></div>
+            <script>
+               (function() { // DON'T EDIT BELOW THIS LINE
+               var d = document, s = d.createElement('script');
+               
+               s.src = '//videocourse.disqus.com/embed.js';
+               
+               s.setAttribute('data-timestamp', +new Date());
+               (d.head || d.body).appendChild(s);
+               })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+         </div>
+      </div>
+   </div>
+</div>

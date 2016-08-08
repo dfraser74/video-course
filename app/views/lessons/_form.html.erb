@@ -1,0 +1,47 @@
+ <%= form_for([@chapter, @lesson]) do |f| %>
+<div>             
+<div class="field">
+<%= f.label :title %><br>
+<%= f.text_field :title %>
+</div>
+<div class="field">
+<%= f.label :description %><br>
+<%= f.text_area :description %>
+</div>
+ <div class="field">
+	<%= f.label :coverimage, "Cover Image" %><br>
+	<%= f.file_field :coverimage %>
+</div>
+<div class="field">
+<%= f.label :video, "Lesson file" %><br>
+<%= f.file_field :video %>
+</div>
+<hr/>
+<p>Format: item1, item2, item3</p>
+<div class="field">
+<%= f.label :sources %><br>
+<%= f.text_area :sources %>
+</div>
+<div class="field">
+<%= f.label :actions %><br>
+<%= f.text_area :actions %>
+</div>
+<hr/>
+<p>Format: title => link, title2 => link2</p>
+<div class="field">
+<%= f.label :files %><br>
+<%= f.text_area :files %>
+</div>
+<div class="field">
+<%= f.label :images %><br>
+<%= f.text_area :images %>
+</div>
+<div class="field">
+<%= f.label :videos %><br>
+<%= f.text_area :videos %>
+</div>
+<div class="actions">
+<%= f.submit %>
+</div>
+<% end %>
+</div>

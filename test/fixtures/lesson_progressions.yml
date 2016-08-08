@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  completion: false
+  user_id: 
+  lessons_id: 
+
+two:
+  completion: false
+  user_id: 
+  lessons_id: 
