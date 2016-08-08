@@ -1,28 +1,8 @@
-== README
+<b>Chapters Index Page</b>
+http://www.basicgrowth.com/wp-content/uploads/2016/08/screencapture-bg-video-course-herokuapp-com-1470652441403.png
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+<b>Lessons Index Page</b>
+http://www.basicgrowth.com/wp-content/uploads/2016/08/screencapture-bg-video-course-herokuapp-com-wealth-1470652428749.png
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+<b>Lessons Show Page</b>
+http://www.basicgrowth.com/wp-content/uploads/2016/08/lessons.png
