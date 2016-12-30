@@ -8,8 +8,8 @@
                      <div class="form-top-left text-center">
                         <h2 class="loginbuttons"><span class="loginspan">
                         <%= link_to("Login", new_user_session_path) %>
-                        </span> 
-                        | 
+                        </span>
+                        |
                         <span class="signupspan active">
                           <%= link_to("Signup", new_user_registration_path) %>
                         </span></h2>
@@ -39,10 +39,10 @@
                      <% end %>
                      <div class="social-login-buttons center-block text-center">
                         <h3>...or signup with:</h3>
-                         <%= link_to(user_omniauth_authorize_path(:facebook), :class => "btn btn-link-1 btn-link-1-facebook") do %>
+                         <%= link_to(user_facebook_omniauth_authorize_path, :class => "btn btn-link-1 btn-link-1-facebook") do %>
                         <i class="fa fa-facebook"></i> Facebook
                         <% end %>
-                        <%= link_to(user_omniauth_authorize_path(:twitter), :class => "btn btn-link-1 btn-link-1-twitter") do %>
+                        <%= link_to(user_twitter_omniauth_authorize_path, :class => "btn btn-link-1 btn-link-1-twitter") do %>
                         <i class="fa fa-twitter"></i> Twitter
                         <% end %>
                      </div>
